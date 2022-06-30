@@ -16,4 +16,7 @@ const (
 
 	// Cache TTL
 	JwksResponseCacheTimeout = 24 * time.Hour
+
+	//Config URL
+	ConfigURLPath = "ConfigUrl"
 )
