@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/spf13/viper"
-	"gitlab.com/feedplan/go-libraries/constants"
+	"gitlab.com/feedplan-libraries/common/constants"
 )
 
 //Init :

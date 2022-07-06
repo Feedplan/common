@@ -16,9 +16,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/spf13/viper"
 
-	"gitlab.com/feedplan/go-libraries/cache"
-	"gitlab.com/feedplan/go-libraries/constants"
-	"gitlab.com/feedplan/go-libraries/logger"
+	"gitlab.com/feedplan-libraries/common/cache"
+	"gitlab.com/feedplan-libraries/common/constants"
+	"gitlab.com/feedplan-libraries/common/logger"
 )
 
 var jwtMiddleWare *jwtmiddleware.JWTMiddleware
