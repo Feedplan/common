@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 
-	"gitlab.com/feedplan/go-libraries/constants"
+	"gitlab.com/feedplan-libraries/common/constants"
 )
 
 var SugarLogger *zap.SugaredLogger

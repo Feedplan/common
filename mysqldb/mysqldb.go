@@ -12,8 +12,8 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
 
-	"gitlab.com/feedplan/go-libraries/constants"
-	"gitlab.com/feedplan/go-libraries/logger"
+	"gitlab.com/feedplan-libraries/common/constants"
+	"gitlab.com/feedplan-libraries/common/logger"
 )
 
 var db *gorm.DB
