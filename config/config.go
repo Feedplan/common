@@ -37,7 +37,7 @@ func fetchConfiguration(service, path, env string) ([]byte, error) {
 			log.Print("using local config.")
 		}
 	} else {
-		url := constants.ConfigURLPath + +service + "/" + env
+		url := constants.ConfigURLPath + "/" + service + "/" + env
 		fmt.Printf("url is : %s \n", url)
 		fmt.Printf("Loading config from %s \n", url)
 		resp, err := http.Get(url)

@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"context"
 	"os"
 	"path"
 
@@ -8,6 +9,8 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+
+	"gitlab.com/feedplan-libraries/constants"
 )
 
 var SugarLogger *zap.SugaredLogger
@@ -42,11 +45,11 @@ func getFileEncoder() zapcore.Encoder {
 	return zapcore.NewJSONEncoder(encoderConfig)
 }
 func getLogWriter() zapcore.WriteSyncer {
-	logFilePath := viper.GetString("log.file.path")
-	logFileName := viper.GetString("log.file.name")
-	logFileMaxSize := viper.GetInt("log.file.maxsize")
-	logFileMaxBackups := viper.GetInt("log.file.maxbackup")
-	logFileMaxAge := viper.GetInt("log.file.maxage")
+	logFilePath := viper.GetString(constants.LogFile + constants.Path)
+	logFileName := viper.GetString(constants.LogFile + constants.Name)
+	logFileMaxSize := viper.GetInt(constants.LogFile + constants.MaxSize)
+	logFileMaxBackups := viper.GetInt(constants.LogFile + constants.MaxBackUp)
+	logFileMaxAge := viper.GetInt(constants.LogFile + constants.MaxAge)
 	logFile := path.Join(logFilePath, logFileName)
 	lumberJackLogger := &lumberjack.Logger{
 		Filename:   logFile,
@@ -57,4 +60,12 @@ func getLogWriter() zapcore.WriteSyncer {
 		LocalTime:  true,
 	}
 	return zapcore.AddSync(lumberJackLogger)
+}
+
+func Logger(ctx context.Context) *zap.SugaredLogger {
+	newLogger := SugarLogger
+	if ctxCorrelationID, ok := ctx.Value(constants.CorrelationId).(string); ok {
+		newLogger = newLogger.With(zap.String(constants.CorrelationId, ctxCorrelationID))
+	}
+	return newLogger
 }

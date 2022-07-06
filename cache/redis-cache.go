@@ -9,6 +9,8 @@ import (
 	"github.com/bsm/redislock"
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
+
+	"gitlab.com/feedplan-libraries/constants"
 	"gitlab.com/feedplan-libraries/logger"
 )
 
@@ -29,7 +31,7 @@ type RedisClientImp struct {
 // GetRedisClientImp : Returns new redis client after initializing and validating the connection to the redis distributed cache
 func GetRedisClientImp() *RedisClientImp {
 	once.Do(func() {
-		redisURL := viper.GetString("redis.url")
+		redisURL := viper.GetString(constants.RedisURLKey)
 		client := redis.NewClient(&redis.Options{
 			Addr: redisURL,
 			DB:   0, // use default DB

@@ -5,13 +5,13 @@ import "time"
 const (
 	DevEnvironment = "dev"
 	Environment    = "Environment"
+	CorrelationId  = "X-Correlation-ID"
 
 	JwksUrl      = "JwksUrl"
 	JwksAudience = "JwksAudience"
 	JwksIssuer   = "JwksIssuer"
 	Kid          = "kid"
 
-	ColonSeparator  = ":"
 	JwksResponseKey = "jwksResponse"
 
 	// Cache TTL
@@ -19,4 +19,31 @@ const (
 
 	//Config URL
 	ConfigURLPath = "ConfigUrl"
+
+	ServiceNameKey = ""
+
+	//Redis Key
+	RedisURLKey               = "redis.url"
+	ColonSeparatorForRedisKey = ":"
+
+	// Log file
+	LogFile   = "log.file."
+	Path      = "path"
+	Name      = "name"
+	MaxSize   = "maxsize"
+	MaxBackUp = "maxbackup"
+	MaxAge    = "maxage"
+
+	//Database Keys
+	DatabaseKey                   = "database."
+	DatabaseUserKey               = "user"
+	DatabasePassKey               = "password"
+	DatabaseHostKey               = "host"
+	DatabaseNameKey               = "name"
+	DatabaseMaxIdleConnectionsKey = "maxIdleConnections"
+	DatabaseMaxOpenConnectionsKey = "maxOpenConnections"
+	DatabaseMaxLifetimeKey        = "maxMaxLifetimeInHours"
+
+	//JWKS
+	PEMFilePath = "pkg/docs/key.json"
 )
