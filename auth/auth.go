@@ -4,14 +4,18 @@ import (
 	b64 "encoding/base64"
 	"encoding/json"
 	"errors"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
-	"github.com/dgrijalva/jwt-go"
+	jwt "github.com/form3tech-oss/jwt-go"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/spf13/viper"
+
 	"gitlab.com/feedplan-libraries/cache"
 	"gitlab.com/feedplan-libraries/constants"
 	"gitlab.com/feedplan-libraries/logger"
@@ -24,15 +28,16 @@ type Jwks struct {
 }
 
 type JSONWebKeys struct {
+	Kty string   `json:"kty"`
 	Kid string   `json:"kid"`
+	Use string   `json:"use"`
+	N   string   `json:"n"`
+	E   string   `json:"e"`
 	X5c []string `json:"x5c"`
 }
 
 type CustomClaims struct {
 	// Note that the scope can be string or an array
-	RawScope json.RawMessage `json:"scope"`
-	// Scopes need to be unmarshalled post the initial unmarshalling as we can't be sure of the type
-	Scopes []string `json:"-"`
 	jwt.StandardClaims
 }
 
@@ -110,147 +115,17 @@ func IsAuthorizedUser(token, cid string) bool {
 		logger.SugarLogger.Errorw("Unable to unmarshal decoded claims", "DecodedToken ", string(decodedToken), "CustomerID ", cid)
 		return false
 	}
-	claims.Scopes, marshallError = claims.getScopes()
-	if marshallError != nil {
-		logger.SugarLogger.Errorw("Unable to get scopes", "CustomerID", cid, "Token", token)
-		return false
-	}
-	for _, s := range claims.Scopes {
-		if strings.EqualFold(constants.UserJourneyScope, s) {
-			if claims.Subject == "" {
-				logger.SugarLogger.Warnw("No subject found in claims even though scope is user_journey", "CustomerID ", cid, "Token ", token)
-				return false
-			}
-			// returning if subject matches customer id
-			return strings.EqualFold(claims.Subject, cid)
-		}
-	}
-	logger.SugarLogger.Debugw("Cid claim is valid as not a customer token", "CustomerID ", cid)
-	// Returning true if in-case it is not a customer token
-	return false
-}
 
-func ValidateScope(token, validScope string) bool {
-	jsonTokens := strings.Split(token, ".")
-	if len(jsonTokens) != 3 {
-		logger.SugarLogger.Warnw("Token structure does not seem to be as expected. Token: scope", "token", token)
-		return false
-	}
+	// returning if subject matches customer id
+	return strings.EqualFold(claims.Subject, cid)
 
-	payloadToken := jsonTokens[1]
-	decodedToken, decodeError := b64.StdEncoding.DecodeString(payloadToken + "==")
-	if decodeError != nil {
-		logger.SugarLogger.Warnw("Unable to decode token. Payload token:", "TokenPayload", payloadToken, "ErrorMessage", decodeError.Error())
-		return false
-	}
-
-	claims := CustomClaims{}
-	marshallError := json.Unmarshal([]byte(decodedToken), &claims)
-	if marshallError != nil {
-		logger.SugarLogger.Errorw("Unable to unmarshal decoded claims.", "DecodedToken:", decodedToken)
-		return false
-	}
-
-	claims.Scopes, marshallError = claims.getScopes()
-	if marshallError != nil {
-		logger.SugarLogger.Errorw("Unable to get scopes. for token ", "error ", marshallError)
-		return false
-	}
-
-	for _, scope := range claims.Scopes {
-		if strings.Contains(validScope, scope) {
-			return true
-		}
-	}
-	// Returning true if in-case it is not a customer token
-	return false
-}
-
-// ValidateCustomerTokenWithID : Checks if the customer id matches the value of subject in authorization token.
-func ValidateCustomerTokenWithID(token string, cid string) bool {
-	if len(token) == 0 {
-		logger.SugarLogger.Warnw("Token cannot be Empty", "CustomerID", cid)
-		return false
-	}
-
-	if len(cid) == 0 || cid == uuid.Nil.String() {
-		logger.SugarLogger.Warnw("CustomerID cannot be Empty", "CustomerID", cid)
-		return false
-	}
-
-	jsonTokens := strings.Split(token, ".")
-	if len(jsonTokens) != 3 {
-		logger.SugarLogger.Warnw("Unexpected token structure", "Token", token, "CustomerID", cid)
-		return false
-	}
-
-	decodedToken, decodeError := b64.StdEncoding.DecodeString(jsonTokens[1] + "==")
-	if decodeError != nil {
-		logger.SugarLogger.Warnw("Unable to decode token", "CustomerID", cid, "Payload", jsonTokens[1], "ErrorMessage", decodeError.Error())
-		//return false
-	}
-
-	claims := CustomClaims{}
-	marshallError := json.Unmarshal(decodedToken, &claims)
-	if marshallError != nil {
-		logger.SugarLogger.Warnw("Unable to unmarshal decoded claims", "DecodedToken", string(decodedToken), "CustomerID", cid)
-		return false
-	}
-
-	claims.Scopes, marshallError = claims.getScopes()
-	if marshallError != nil {
-		logger.SugarLogger.Warnw("Unable to get scopes", "CustomerID", cid, "Token", token)
-		return false
-	}
-
-	for _, s := range claims.Scopes {
-		if strings.EqualFold("user_journey", s) {
-			if claims.Subject == "" {
-				logger.SugarLogger.Warnw("No subject found in claims even though scope is user_journey", "CustomerID", cid, "Token", token)
-				return false
-			}
-			// returning if subject matches customer id
-			return strings.EqualFold(claims.Subject, cid)
-		}
-	}
-
-	logger.SugarLogger.Debugw("Cid claim is valid as not a customer token", "CustomerID", cid)
-	// Returning true if in-case it is not a customer token
-	return true
-}
-
-func (claims *CustomClaims) getScopes() ([]string, error) {
-	if len(claims.RawScope) == 0 {
-		logger.SugarLogger.Warnw("Scope raw message is empty.", "Claims ", claims)
-		return nil, errors.New("scope raw message is empty")
-	}
-
-	switch claims.RawScope[0] {
-	case '"':
-		var scope string
-		if err := json.Unmarshal(claims.RawScope, &scope); err != nil {
-			logger.SugarLogger.Errorw("Unable to unmarshal stringified scope.", "RawScope: ", claims.RawScope)
-			return nil, errors.New("unable to unmarshall string scope")
-		}
-		return []string{scope}, nil
-
-	case '[':
-		var scopes []string
-		if err := json.Unmarshal(claims.RawScope, &scopes); err != nil {
-			logger.SugarLogger.Errorw("Unable to unmarshal arrayed scopes.", "RawScopes: ", claims.RawScope)
-			return nil, errors.New("unable to unmarshall arrayed scopes")
-		}
-		return scopes, nil
-	}
-	logger.SugarLogger.Warnw("Unable to unmarshal scopes.", "RawScopes: ", claims.RawScope)
-	return nil, errors.New("unable to unmarshal scopes")
 }
 
 func getPemCert(token *jwt.Token) (string, error) {
 	redisClient := cache.GetRedisClientImp()
 	environment := viper.GetString(constants.Environment)
 	redisKey := constants.ServiceNameKey + constants.ColonSeparatorForRedisKey + environment + constants.ColonSeparatorForRedisKey + constants.JwksResponseKey
-	jwksResponse := Jwks{}
+	var jwksResponse = Jwks{}
 	cert := ""
 
 	cachedResponse, cachedResponseErr := redisClient.Get(redisKey)
@@ -265,11 +140,14 @@ func getPemCert(token *jwt.Token) (string, error) {
 	if cachedResponseErr != nil || len(cachedResponse) == 0 {
 		jwksResponse = Jwks{}
 		resp, err := http.Get(viper.GetString(constants.JwksUrl))
+
 		if err != nil {
 			return cert, err
 		}
 		defer resp.Body.Close()
+
 		err = json.NewDecoder(resp.Body).Decode(&jwksResponse)
+
 		if err != nil {
 			return cert, err
 		}
@@ -280,6 +158,15 @@ func getPemCert(token *jwt.Token) (string, error) {
 				logger.SugarLogger.Errorw("Failed to cache JWKS response in redis", "ErrorMessage", err.Error())
 			}
 		} else {
+			workingDir, _ := os.Getwd()
+			rsaKeyData, err := ioutil.ReadFile(workingDir + constants.PEMFilePath)
+			if err != nil {
+				return cert, err
+			}
+			_, err = redisClient.Set(redisKey, rsaKeyData, constants.JwksResponseCacheTimeout)
+			if err != nil {
+				logger.SugarLogger.Errorw("Failed to cache JWKS response in redis", "ErrorMessage", err.Error())
+			}
 			logger.SugarLogger.Errorw("Failed to marshal JWKS response. Hence, could not set value in redis cache", "ErrorMessage", marshalErr)
 		}
 	}

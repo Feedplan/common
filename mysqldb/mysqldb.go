@@ -11,6 +11,8 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
+
+	"gitlab.com/feedplan-libraries/constants"
 	"gitlab.com/feedplan-libraries/logger"
 )
 
@@ -20,15 +22,15 @@ var err error
 type DBService struct{}
 
 // Init : Initializes the database migrations
-func Init(config *viper.Viper) {
-	dbUserName := config.GetString("database.username")
-	dbPassword := config.GetString("database.password")
-	dbHost := config.GetString("database.host")
-	dbName := config.GetString("database.name")
+func Init() {
+	dbUserName := viper.GetString(constants.DatabaseKey + constants.DatabaseNameKey)
+	dbPassword := viper.GetString(constants.DatabaseKey + constants.DatabasePassKey)
+	dbHost := viper.GetString(constants.DatabaseKey + constants.DatabaseHostKey)
+	dbName := viper.GetString(constants.DatabaseKey + constants.DatabaseNameKey)
 	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", dbHost, dbUserName, dbName, dbPassword) //Build connection string
-	maxIdleConnections := config.GetInt("database.maxIdleConnections")
-	maxOpenConnections := config.GetInt("database.maxOpenConns")
-	connectionMaxLifetime := config.GetInt("database.connMaxLifetimeInHours")
+	maxIdleConnections := viper.GetInt(constants.DatabaseKey + constants.DatabaseMaxIdleConnectionsKey)
+	maxOpenConnections := viper.GetInt(constants.DatabaseKey + constants.DatabaseMaxOpenConnectionsKey)
+	connectionMaxLifetime := viper.GetInt(constants.DatabaseKey + constants.DatabaseMaxLifetimeKey)
 
 	dbConnectionString := dbUserName + ":" + dbPassword + "@/" + dbName
 	fmt.Println(dbConnectionString)
