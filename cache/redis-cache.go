@@ -10,8 +10,8 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
 
-	"gitlab.com/feedplan-libraries/constants"
-	"gitlab.com/feedplan-libraries/logger"
+	"gitlab.com/feedplan/go-libraries/constants"
+	"gitlab.com/feedplan/go-libraries/logger"
 )
 
 var once sync.Once

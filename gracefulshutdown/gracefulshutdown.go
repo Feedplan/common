@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"gitlab.com/feedplan-libraries/logger"
+	"gitlab.com/feedplan/go-libraries/logger"
 )
 
 var (
