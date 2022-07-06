@@ -1,4 +1,4 @@
-module gitlab.com/feedplan-libraries
+module gitlab.com/feedplan/go-libraries
 
 go 1.18
 
