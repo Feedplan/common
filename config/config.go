@@ -70,9 +70,8 @@ func addSysConfig() {
 }
 
 func getEnvOrDefault(envKey, defaultValue string) string {
-	var envValue string
-	var ok bool
-	if envValue, ok = os.LookupEnv(envKey); !ok {
+	envValue, ok := os.LookupEnv(envKey)
+	if !ok {
 		envValue = defaultValue
 	}
 	return envValue
@@ -85,21 +84,20 @@ func parseConfiguration(body []byte) {
 	if err != nil {
 		fmt.Println("Cannot parse configuration, message: " + err.Error())
 	}
-	for key, value := range cloudConfig.PropertySources[0].Source {
+	for key, value := range cloudConfig.PropertySources.Source {
 		viper.Set(key, value)
 		fmt.Printf("Loading config property > %s - %s \n", key, value)
 	}
-	if viper.IsSet("server_name") {
+	if viper.IsSet(constants.ServiceNameKey) {
 		fmt.Println("Successfully loaded configuration for service\n", viper.GetString("server_name"))
 	}
 }
 
 // Structs having same structure as response from Spring Cloud Config
 type springCloudConfig struct {
-	Name            string           `json:"name"`
-	PropertySources []propertySource `json:"propertySources"`
+	Name            string         `json:"name"`
+	PropertySources propertySource `json:"propertySources"`
 }
 type propertySource struct {
-	Name   string                 `json:"name"`
 	Source map[string]interface{} `json:"source"`
 }

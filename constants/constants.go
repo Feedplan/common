@@ -9,6 +9,7 @@ const (
 	ServiceNameKey = "serviceName"
 	AwsRegionKey   = "awsRegion"
 	ConfigFilePath = "/pkg/config/config.json"
+	ServerPortKey  = "serverPort"
 
 	//Jwks
 	JwksAudience    = "JwksAudience"

@@ -126,7 +126,8 @@ func IsAuthorizedUser(token, cid string) bool {
 func getPemCert(token *jwt.Token) (string, error) {
 	redisClient := cache.GetRedisClientImp()
 	environment := viper.GetString(constants.Environment)
-	redisKey := viper.GetString(constants.ServiceNameKey) + constants.ColonSeparatorForRedisKey + environment + constants.ColonSeparatorForRedisKey + constants.JwksResponseKey
+	serviceName := viper.GetString(constants.ServiceNameKey)
+	redisKey := serviceName + constants.ColonSeparatorForRedisKey + environment + constants.ColonSeparatorForRedisKey + constants.JwksResponseKey
 	var jwksResponse = Jwks{}
 	cert := ""
 
