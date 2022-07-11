@@ -8,6 +8,7 @@ const (
 	CorrelationId  = "X-Correlation-ID"
 	ServiceNameKey = "serviceName"
 	AwsRegionKey   = "awsRegion"
+	ConfigFilePath = "/pkg/config/config.json"
 
 	//Jwks
 	JwksAudience    = "JwksAudience"

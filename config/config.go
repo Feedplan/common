@@ -15,9 +15,9 @@ import (
 )
 
 //Init :
-func Init(service, env, path string) {
+func Init(service, env, region string) {
 	addSysConfig()
-	body, err := fetchConfiguration(service, path, env)
+	body, err := fetchConfiguration(service, env, region)
 	if err != nil {
 		fmt.Println("Couldn't load configuration, cannot start. Terminating. Error: " + err.Error())
 	}
@@ -25,7 +25,7 @@ func Init(service, env, path string) {
 }
 
 // Make HTTP request to fetch configuration from config server
-func fetchConfiguration(service, region, env string) ([]byte, error) {
+func fetchConfiguration(service, env, region string) ([]byte, error) {
 	var bodyBytes []byte
 	var err error
 	result := strings.Compare(env, constants.DevEnvironment)
@@ -37,7 +37,7 @@ func fetchConfiguration(service, region, env string) ([]byte, error) {
 			logger.SugarLogger.Fatalf("Not able to fetch the working directory")
 			os.Exit(1)
 		}
-		bodyBytes, err = ioutil.ReadFile(workingDir + "/config/config.json")
+		bodyBytes, err = ioutil.ReadFile(workingDir + constants.ConfigFilePath)
 		if err != nil {
 			fmt.Println("Couldn't read local configuration file.", err)
 		} else {
@@ -52,6 +52,7 @@ func fetchConfiguration(service, region, env string) ([]byte, error) {
 			bodyBytes, err = ioutil.ReadAll(resp.Body)
 			if err != nil {
 				fmt.Println("Error reading configuration response body.")
+				logger.SugarLogger.Fatalf("Error reading configuration response body.")
 			}
 		}
 	}
