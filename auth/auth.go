@@ -4,9 +4,7 @@ import (
 	b64 "encoding/base64"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
 	"net/http"
-	"os"
 	"strings"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
@@ -21,7 +19,11 @@ import (
 	"gitlab.com/feedplan-libraries/common/logger"
 )
 
-var jwtMiddleWare *jwtmiddleware.JWTMiddleware
+var (
+	jwtMiddleWare *jwtmiddleware.JWTMiddleware
+
+	jwksUrl = "https://feedplan-" + viper.GetString(constants.Environment) + ".s3." + viper.GetString(constants.AwsRegionKey) + ".amazonaws.com/jwks"
+)
 
 type Jwks struct {
 	Keys []JSONWebKeys `json:"keys"`
@@ -124,12 +126,11 @@ func IsAuthorizedUser(token, cid string) bool {
 func getPemCert(token *jwt.Token) (string, error) {
 	redisClient := cache.GetRedisClientImp()
 	environment := viper.GetString(constants.Environment)
-	redisKey := constants.ServiceNameKey + constants.ColonSeparatorForRedisKey + environment + constants.ColonSeparatorForRedisKey + constants.JwksResponseKey
+	redisKey := viper.GetString(constants.ServiceNameKey) + constants.ColonSeparatorForRedisKey + environment + constants.ColonSeparatorForRedisKey + constants.JwksResponseKey
 	var jwksResponse = Jwks{}
 	cert := ""
 
 	cachedResponse, cachedResponseErr := redisClient.Get(redisKey)
-
 	if cachedResponseErr == nil && len(cachedResponse) > 0 {
 		logger.SugarLogger.Errorw("Found JWKS response in redis cache. Un-marshaling the response", "CachedResponse", cachedResponse)
 		cachedResponseErr = json.Unmarshal([]byte(cachedResponse), &jwksResponse)
@@ -137,20 +138,22 @@ func getPemCert(token *jwt.Token) (string, error) {
 			logger.SugarLogger.Warnw("Failed to unmarshal JWKS response from redis cache. Hence, calling JwksUrl to get the value", "CachedResponse", cachedResponse, "ErrorMessage", cachedResponseErr.Error())
 		}
 	}
+
 	if cachedResponseErr != nil || len(cachedResponse) == 0 {
 		jwksResponse = Jwks{}
-		resp, err := http.Get(viper.GetString(constants.JwksUrl))
 
+		resp, err := http.Get(viper.GetString(jwksUrl))
 		if err != nil {
 			return cert, err
 		}
+
 		defer resp.Body.Close()
 
 		err = json.NewDecoder(resp.Body).Decode(&jwksResponse)
-
 		if err != nil {
 			return cert, err
 		}
+
 		jwksResponseInBytes, marshalErr := json.Marshal(jwksResponse)
 		if marshalErr == nil {
 			_, err = redisClient.Set(redisKey, jwksResponseInBytes, constants.JwksResponseCacheTimeout)
@@ -158,15 +161,6 @@ func getPemCert(token *jwt.Token) (string, error) {
 				logger.SugarLogger.Errorw("Failed to cache JWKS response in redis", "ErrorMessage", err.Error())
 			}
 		} else {
-			workingDir, _ := os.Getwd()
-			rsaKeyData, err := ioutil.ReadFile(workingDir + constants.PEMFilePath)
-			if err != nil {
-				return cert, err
-			}
-			_, err = redisClient.Set(redisKey, rsaKeyData, constants.JwksResponseCacheTimeout)
-			if err != nil {
-				logger.SugarLogger.Errorw("Failed to cache JWKS response in redis", "ErrorMessage", err.Error())
-			}
 			logger.SugarLogger.Errorw("Failed to marshal JWKS response. Hence, could not set value in redis cache", "ErrorMessage", marshalErr)
 		}
 	}

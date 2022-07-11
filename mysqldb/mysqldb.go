@@ -23,14 +23,14 @@ type DBService struct{}
 
 // Init : Initializes the database migrations
 func Init() {
-	dbUserName := viper.GetString(constants.DatabaseKey + constants.DatabaseNameKey)
-	dbPassword := viper.GetString(constants.DatabaseKey + constants.DatabasePassKey)
-	dbHost := viper.GetString(constants.DatabaseKey + constants.DatabaseHostKey)
-	dbName := viper.GetString(constants.DatabaseKey + constants.DatabaseNameKey)
+	dbUserName := viper.GetString(constants.DatabaseNameKey)
+	dbPassword := viper.GetString(constants.DatabasePassKey)
+	dbHost := viper.GetString(constants.DatabaseHostKey)
+	dbName := viper.GetString(constants.DatabaseNameKey)
 	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", dbHost, dbUserName, dbName, dbPassword) //Build connection string
-	maxIdleConnections := viper.GetInt(constants.DatabaseKey + constants.DatabaseMaxIdleConnectionsKey)
-	maxOpenConnections := viper.GetInt(constants.DatabaseKey + constants.DatabaseMaxOpenConnectionsKey)
-	connectionMaxLifetime := viper.GetInt(constants.DatabaseKey + constants.DatabaseMaxLifetimeKey)
+	maxIdleConnections := viper.GetInt(constants.DatabaseMaxIdleConnectionsKey)
+	maxOpenConnections := viper.GetInt(constants.DatabaseMaxOpenConnectionsKey)
+	connectionMaxLifetime := viper.GetInt(constants.DatabaseMaxLifetimeKey)
 
 	dbConnectionString := dbUserName + ":" + dbPassword + "@/" + dbName
 	fmt.Println(dbConnectionString)
@@ -50,7 +50,7 @@ func Init() {
 	db.DB().SetMaxOpenConns(maxOpenConnections)
 	db.DB().SetConnMaxLifetime(time.Hour * time.Duration(connectionMaxLifetime))
 	db.SingularTable(true)
-	workingDir = workingDir + "internal/app/db/migrations"
+	workingDir = workingDir + constants.DatabaseMigrationsScriptPath
 	migrateConf := &goose.DBConf{
 		MigrationsDir: workingDir,
 		Driver: goose.DBDriver{

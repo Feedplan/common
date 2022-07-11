@@ -11,6 +11,7 @@ import (
 
 	"github.com/spf13/viper"
 	"gitlab.com/feedplan-libraries/common/constants"
+	"gitlab.com/feedplan-libraries/common/logger"
 )
 
 //Init :
@@ -24,20 +25,26 @@ func Init(service, env, path string) {
 }
 
 // Make HTTP request to fetch configuration from config server
-func fetchConfiguration(service, path, env string) ([]byte, error) {
+func fetchConfiguration(service, region, env string) ([]byte, error) {
 	var bodyBytes []byte
 	var err error
 	result := strings.Compare(env, constants.DevEnvironment)
 	if result == 0 {
 		//panic("Couldn't load configuration, cannot start. Terminating. Error: " + err.Error())
-		bodyBytes, err = ioutil.ReadFile(path + "/config/config.json")
+		workingDir, err := os.Getwd()
+		if err != nil {
+			fmt.Println("Not able to fetch the working directory")
+			logger.SugarLogger.Fatalf("Not able to fetch the working directory")
+			os.Exit(1)
+		}
+		bodyBytes, err = ioutil.ReadFile(workingDir + "/config/config.json")
 		if err != nil {
 			fmt.Println("Couldn't read local configuration file.", err)
 		} else {
 			log.Print("using local config.")
 		}
 	} else {
-		url := constants.ConfigURLPath + "/" + service + "/" + env
+		url := "https://feedplan-" + env + ".s3." + region + ".amazonaws.com/" + service + "/config.json"
 		fmt.Printf("url is : %s \n", url)
 		fmt.Printf("Loading config from %s \n", url)
 		resp, err := http.Get(url)
@@ -54,11 +61,11 @@ func fetchConfiguration(service, path, env string) ([]byte, error) {
 // Get DB and cred from sys env
 func addSysConfig() {
 	dbUser := getEnvOrDefault("DB_USERNAME", "postgres")
-	viper.Set("database.username", dbUser)
+	viper.Set(constants.DatabaseUserKey, dbUser)
 	dbPassord := getEnvOrDefault("DB_PASSWORD", "flywaydb")
-	viper.Set("database.password", dbPassord)
+	viper.Set(constants.DatabasePassKey, dbPassord)
 	dbHost := getEnvOrDefault("DB_HOST", "localhost")
-	viper.Set("database.host", dbHost)
+	viper.Set(constants.DatabaseHostKey, dbHost)
 }
 
 func getEnvOrDefault(envKey, defaultValue string) string {

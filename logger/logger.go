@@ -45,11 +45,11 @@ func getFileEncoder() zapcore.Encoder {
 	return zapcore.NewJSONEncoder(encoderConfig)
 }
 func getLogWriter() zapcore.WriteSyncer {
-	logFilePath := viper.GetString(constants.LogFile + constants.Path)
-	logFileName := viper.GetString(constants.LogFile + constants.Name)
-	logFileMaxSize := viper.GetInt(constants.LogFile + constants.MaxSize)
-	logFileMaxBackups := viper.GetInt(constants.LogFile + constants.MaxBackUp)
-	logFileMaxAge := viper.GetInt(constants.LogFile + constants.MaxAge)
+	logFilePath := viper.GetString(constants.LogFilePath)
+	logFileName := viper.GetString(constants.LogFileName)
+	logFileMaxSize := viper.GetInt(constants.LogFileMaxSize)
+	logFileMaxBackups := viper.GetInt(constants.LogFileMaxBackUp)
+	logFileMaxAge := viper.GetInt(constants.LogFileMaxAge)
 	logFile := path.Join(logFilePath, logFileName)
 	lumberJackLogger := &lumberjack.Logger{
 		Filename:   logFile,
