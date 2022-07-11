@@ -10,7 +10,7 @@ const (
 	AwsRegionKey     = "awsRegion"
 	ConfigFilePath   = "/pkg/config/config.json"
 	ServerPortKey    = "serverPort"
-	DeafultAWSRegion = "ap-south-1"
+	DefaultAWSRegion = "ap-south-1"
 
 	//Jwks
 	JwksAudience    = "JwksAudience"
