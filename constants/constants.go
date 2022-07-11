@@ -6,44 +6,36 @@ const (
 	DevEnvironment = "dev"
 	Environment    = "Environment"
 	CorrelationId  = "X-Correlation-ID"
+	ServiceNameKey = "serviceName"
+	AwsRegionKey   = "awsRegion"
 
-	JwksUrl      = "JwksUrl"
-	JwksAudience = "JwksAudience"
-	JwksIssuer   = "JwksIssuer"
-	Kid          = "kid"
-
+	//Jwks
+	JwksAudience    = "JwksAudience"
+	JwksIssuer      = "JwksIssuer"
+	Kid             = "kid"
 	JwksResponseKey = "jwksResponse"
 
 	// Cache TTL
 	JwksResponseCacheTimeout = 24 * time.Hour
 
-	//Config URL
-	ConfigURLPath = "ConfigUrl"
-
-	ServiceNameKey = ""
-
 	//Redis Key
-	RedisURLKey               = "redis.url"
+	RedisURLKey               = "redisUrl"
 	ColonSeparatorForRedisKey = ":"
 
 	// Log file
-	LogFile   = "log.file."
-	Path      = "path"
-	Name      = "name"
-	MaxSize   = "maxsize"
-	MaxBackUp = "maxbackup"
-	MaxAge    = "maxage"
+	LogFilePath      = "logFilePath"
+	LogFileName      = "logName"
+	LogFileMaxSize   = "logMaxSize"
+	LogFileMaxBackUp = "logMaxBackUp"
+	LogFileMaxAge    = "logMaxAge"
 
 	//Database Keys
-	DatabaseKey                   = "database."
-	DatabaseUserKey               = "user"
-	DatabasePassKey               = "password"
-	DatabaseHostKey               = "host"
-	DatabaseNameKey               = "name"
-	DatabaseMaxIdleConnectionsKey = "maxIdleConnections"
-	DatabaseMaxOpenConnectionsKey = "maxOpenConnections"
-	DatabaseMaxLifetimeKey        = "maxMaxLifetimeInHours"
-
-	//JWKS
-	PEMFilePath = "pkg/docs/key.json"
+	DatabaseUserKey               = "dbUser"
+	DatabasePassKey               = "dbPassword"
+	DatabaseHostKey               = "dbHost"
+	DatabaseNameKey               = "dbName"
+	DatabaseMaxIdleConnectionsKey = "dbMaxIdleConnections"
+	DatabaseMaxOpenConnectionsKey = "dbMaxOpenConnections"
+	DatabaseMaxLifetimeKey        = "dbMaxMaxLifetimeInHours"
+	DatabaseMigrationsScriptPath  = "/internal/app/db/migrations"
 )
