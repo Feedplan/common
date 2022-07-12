@@ -1,4 +1,4 @@
-package mysqldb
+package postgresdb
 
 import (
 	"fmt"
@@ -32,11 +32,9 @@ func Init() {
 	maxOpenConnections := viper.GetInt(constants.DatabaseMaxOpenConnectionsKey)
 	connectionMaxLifetime := viper.GetInt(constants.DatabaseMaxLifetimeKey)
 
-	dbConnectionString := dbUserName + ":" + dbPassword + "@/" + dbName
-	fmt.Println(dbConnectionString)
-	db, err = gorm.Open("mysql", dbConnectionString)
+	db, err = gorm.Open("postgres", dbURI)
 	if err != nil {
-		fmt.Println("failed to connect.", dbConnectionString, err)
+		fmt.Println("failed to connect.", dbURI, err)
 		logger.SugarLogger.Fatalf("Failed to connect to DB", dbURI, err.Error())
 		os.Exit(1)
 	}
