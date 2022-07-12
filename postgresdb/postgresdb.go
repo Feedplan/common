@@ -23,7 +23,7 @@ type DBService struct{}
 
 // Init : Initializes the database migrations
 func Init() {
-	dbUserName := viper.GetString(constants.DatabaseNameKey)
+	dbUserName := viper.GetString(constants.DatabaseUserKey)
 	dbPassword := viper.GetString(constants.DatabasePassKey)
 	dbHost := viper.GetString(constants.DatabaseHostKey)
 	dbName := viper.GetString(constants.DatabaseNameKey)
