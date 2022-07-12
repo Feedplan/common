@@ -52,10 +52,10 @@ func Init() {
 	migrateConf := &goose.DBConf{
 		MigrationsDir: workingDir,
 		Driver: goose.DBDriver{
-			Name:    "mysql",
+			Name:    "postgres",
 			OpenStr: dbURI,
-			Import:  "github.com/go-sql-driver/mysql",
-			Dialect: &goose.MySqlDialect{},
+			Import:  "github.com/lib/pq",
+			Dialect: &goose.PostgresDialect{},
 		},
 	}
 	logger.SugarLogger.Infof("Fetching the most recent DB version")
