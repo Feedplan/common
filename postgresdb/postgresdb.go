@@ -5,7 +5,6 @@ import (
 	"os"
 	"time"
 
-	"bitbucket.org/liamstask/goose/lib/goose"
 	_ "github.com/golang-migrate/migrate/source/file"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -38,39 +37,10 @@ func Init() {
 		logger.SugarLogger.Fatalf("Failed to connect to DB", dbURI, err.Error())
 		os.Exit(1)
 	}
-	workingDir, err := os.Getwd()
-	if err != nil {
-		fmt.Println("Not able to fetch the working directory")
-		logger.SugarLogger.Fatalf("Not able to fetch the working directory")
-		os.Exit(1)
-	}
 	db.DB().SetMaxIdleConns(maxIdleConnections)
 	db.DB().SetMaxOpenConns(maxOpenConnections)
 	db.DB().SetConnMaxLifetime(time.Hour * time.Duration(connectionMaxLifetime))
 	db.SingularTable(true)
-	workingDir = workingDir + constants.DatabaseMigrationsScriptPath
-	migrateConf := &goose.DBConf{
-		MigrationsDir: workingDir,
-		Driver: goose.DBDriver{
-			Name:    "postgres",
-			OpenStr: dbURI,
-			Import:  "github.com/lib/pq",
-			Dialect: &goose.PostgresDialect{},
-		},
-	}
-	logger.SugarLogger.Infof("Fetching the most recent DB version")
-	latest, err := goose.GetMostRecentDBVersion(migrateConf.MigrationsDir)
-	if err != nil {
-		logger.SugarLogger.Errorf("Unable to get recent goose db version", err)
-
-	}
-	fmt.Println(" Most recent DB version ", latest)
-	logger.SugarLogger.Infof("Running the migrations on db", workingDir)
-	err = goose.RunMigrationsOnDb(migrateConf, migrateConf.MigrationsDir, latest, db.DB())
-	if err != nil {
-		logger.SugarLogger.Fatalf("Error while running migrations", err)
-		os.Exit(1)
-	}
 }
 
 // GetDB : Get an instance of DB to connect to the database connection pool
