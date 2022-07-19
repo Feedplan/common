@@ -142,8 +142,7 @@ func getPemCert(token *jwt.Token) (string, error) {
 
 	if cachedResponseErr != nil || len(cachedResponse) == 0 {
 		jwksResponse = Jwks{}
-
-		resp, err := http.Get(viper.GetString(jwksUrl))
+		resp, err := http.Get(jwksUrl)
 		if err != nil {
 			return cert, err
 		}
