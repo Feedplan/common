@@ -32,9 +32,13 @@ type RedisClientImp struct {
 func GetRedisClientImp() *RedisClientImp {
 	once.Do(func() {
 		redisURL := viper.GetString(constants.RedisURLKey)
+		redisUser := viper.GetString(constants.RedisUserKey)
+		redisPassword := viper.GetString(constants.RedisPasswordKey)
 		client := redis.NewClient(&redis.Options{
-			Addr: redisURL,
-			DB:   0, // use default DB
+			Addr:     redisURL,
+			DB:       0, // use default DB
+			Password: redisPassword,
+			Username: redisUser,
 		})
 
 		pingResponse, err := client.Ping(context.Background()).Result()

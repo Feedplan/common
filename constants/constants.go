@@ -23,6 +23,8 @@ const (
 
 	//Redis Key
 	RedisURLKey               = "redisUrl"
+	RedisUserKey              = "redisUser"
+	RedisPasswordKey          = "redisPass"
 	ColonSeparatorForRedisKey = ":"
 
 	// Log file

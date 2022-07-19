@@ -89,7 +89,7 @@ func parseConfiguration(body []byte) {
 		fmt.Printf("Loading config property > %s - %s \n", key, value)
 	}
 	if viper.IsSet(constants.ServiceNameKey) {
-		fmt.Println("Successfully loaded configuration for service\n", viper.GetString("server_name"))
+		fmt.Println("Successfully loaded configuration for service\n", viper.GetString("serverName"))
 	}
 }
 
