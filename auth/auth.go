@@ -167,7 +167,7 @@ func getPemCert(token *jwt.Token) (string, error) {
 
 	for k := range jwksResponse.Keys {
 		if token.Header[constants.Kid] == jwksResponse.Keys[k].Kid {
-			cert = "-----BEGIN CERTIFICATE-----\n" + jwksResponse.Keys[k].X5c[0] + "\n-----END CERTIFICATE-----"
+			cert = "-----BEGIN CERTIFICATE-----" + jwksResponse.Keys[k].X5c[0] + "-----END CERTIFICATE-----"
 		}
 	}
 
@@ -183,7 +183,7 @@ func getPemCert(token *jwt.Token) (string, error) {
 func RemoveJwksCache() error {
 	redisClient := cache.GetRedisClientImp()
 	environment := viper.GetString(constants.Environment)
-	jwksCacheRedisKey := constants.ServiceNameKey + constants.ColonSeparatorForRedisKey + environment + constants.ColonSeparatorForRedisKey + constants.JwksResponseKey
+	jwksCacheRedisKey := viper.GetString(constants.ServiceNameKey) + constants.ColonSeparatorForRedisKey + environment + constants.ColonSeparatorForRedisKey + constants.JwksResponseKey
 	_, err := redisClient.Del(jwksCacheRedisKey)
 	if err != nil {
 		logger.SugarLogger.Errorw("Unable to remove jwks cache", "ErrorMessage", err.Error(), "Key", jwksCacheRedisKey)

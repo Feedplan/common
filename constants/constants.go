@@ -3,14 +3,17 @@ package constants
 import "time"
 
 const (
-	DevEnvironment   = "dev"
-	Environment      = "Environment"
-	CorrelationId    = "X-Correlation-ID"
-	ServiceNameKey   = "serviceName"
-	AwsRegionKey     = "awsRegion"
-	ConfigFilePath   = "/pkg/config/config.json"
-	ServerPortKey    = "serverPort"
-	DefaultAWSRegion = "ap-south-1"
+	DevEnvironment    = "dev"
+	Environment       = "Environment"
+	CorrelationId     = "X-Correlation-ID"
+	ServiceNameKey    = "serviceName"
+	AwsRegionKey      = "awsRegion"
+	ConfigFilePath    = "/pkg/config/config.json"
+	ServerPortKey     = "serverPort"
+	DefaultAWSRegion  = "ap-south-1"
+	AllowedOrigins    = "AllowedOrigins"
+	TrustedProxies    = "TrustedProxies"
+	DefaultServerPort = ":5000"
 
 	//Jwks
 	JwksAudience    = "JwksAudience"
