@@ -14,6 +14,8 @@ const (
 	AllowedOrigins    = "AllowedOrigins"
 	TrustedProxies    = "TrustedProxies"
 	DefaultServerPort = ":5000"
+	Authorization     = "Authorization"
+	Bearer            = "Bearer "
 
 	//Jwks
 	JwksAudience    = "JwksAudience"

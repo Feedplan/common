@@ -21,8 +21,6 @@ import (
 
 var (
 	jwtMiddleWare *jwtmiddleware.JWTMiddleware
-
-	jwksUrl = "https://feedplan-" + viper.GetString(constants.Environment) + ".s3." + viper.GetString(constants.AwsRegionKey) + ".amazonaws.com/jwks"
 )
 
 type Jwks struct {
@@ -142,6 +140,7 @@ func getPemCert(token *jwt.Token) (string, error) {
 
 	if cachedResponseErr != nil || len(cachedResponse) == 0 {
 		jwksResponse = Jwks{}
+		var jwksUrl = "https://feedplan-" + viper.GetString(constants.Environment) + ".s3." + viper.GetString(constants.AwsRegionKey) + ".amazonaws.com/jwks"
 		resp, err := http.Get(jwksUrl)
 		if err != nil {
 			return cert, err
