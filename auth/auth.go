@@ -131,7 +131,7 @@ func getPemCert(token *jwt.Token) (string, error) {
 
 	cachedResponse, cachedResponseErr := redisClient.Get(redisKey)
 	if cachedResponseErr == nil && len(cachedResponse) > 0 {
-		logger.SugarLogger.Errorw("Found JWKS response in redis cache. Un-marshaling the response", "CachedResponse", cachedResponse)
+		logger.SugarLogger.Errorw("Found JWKS response in redis cache. Un-marshaling the response", "CachedResponse")
 		cachedResponseErr = json.Unmarshal([]byte(cachedResponse), &jwksResponse)
 		if cachedResponseErr != nil {
 			logger.SugarLogger.Warnw("Failed to unmarshal JWKS response from redis cache. Hence, calling JwksUrl to get the value", "CachedResponse", "ErrorMessage", cachedResponseErr.Error())
