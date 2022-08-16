@@ -29,7 +29,7 @@ type RedisClientImp struct {
 }
 
 // GetRedisClientImp : Returns new redis client after initializing and validating the connection to the redis distributed cache
-func GetRedisClientImp() *RedisClientImp {
+func GetRedisClientImp() IRedisClient {
 	once.Do(func() {
 		redisURL := viper.GetString(constants.RedisURLKey)
 		redisUser := viper.GetString(constants.RedisUserKey)
