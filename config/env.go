@@ -32,3 +32,12 @@ func GetEnv() Env {
 		return Dev
 	}
 }
+
+func GetEnvSpecificValue(dev, prod string) string {
+	switch GetEnv() {
+	case Prod:
+		return prod
+	default:
+		return dev
+	}
+}
