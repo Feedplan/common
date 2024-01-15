@@ -14,22 +14,23 @@ import (
 	"gitlab.com/feedplan-libraries/common/logger"
 )
 
-//Init :
+// Init :
 func Init(service, env, region string) {
 	addSysConfig()
 	body, err := fetchConfiguration(service, env, region)
 	if err != nil {
 		fmt.Println("Couldn't load configuration, cannot start. Terminating. Error: " + err.Error())
 	}
-	parseConfiguration(body)
+	parseConfiguration(body, env)
 }
 
 // Make HTTP request to fetch configuration from config server
 func fetchConfiguration(service, env, region string) ([]byte, error) {
 	var bodyBytes []byte
 	var err error
-	result := strings.Compare(env, constants.DevEnvironment)
-	if result == 0 {
+	inDev := strings.Compare(env, constants.DevEnvironment) == 0
+	inProd := strings.Compare(env, constants.ProdEnvironment) == 0
+	if inDev || inProd {
 		//panic("Couldn't load configuration, cannot start. Terminating. Error: " + err.Error())
 		workingDir, err := os.Getwd()
 		if err != nil {
@@ -78,13 +79,23 @@ func getEnvOrDefault(envKey, defaultValue string) string {
 }
 
 // Pass JSON bytes into struct and then into Viper
-func parseConfiguration(body []byte) {
+func parseConfiguration(body []byte, env string) {
 	var cloudConfig springCloudConfig
 	err := json.Unmarshal(body, &cloudConfig)
 	if err != nil {
 		fmt.Println("Cannot parse configuration, message: " + err.Error())
 	}
-	for key, value := range cloudConfig.PropertySources.Source {
+	var sources map[string]interface{}
+	inDev := strings.Compare(env, constants.DevEnvironment) == 0
+	inProd := strings.Compare(env, constants.ProdEnvironment) == 0
+	if inDev {
+		sources = cloudConfig.PropertySources.Source
+	}
+	if inProd {
+		sources = cloudConfig.PropertySources.ProdSource
+	}
+
+	for key, value := range sources {
 		viper.Set(key, value)
 		fmt.Printf("Loading config property > %s - %s \n", key, value)
 	}
@@ -99,5 +110,6 @@ type springCloudConfig struct {
 	PropertySources propertySource `json:"propertySources"`
 }
 type propertySource struct {
-	Source map[string]interface{} `json:"source"`
+	Source     map[string]interface{} `json:"source"`
+	ProdSource map[string]interface{} `json:"prodSource"`
 }
