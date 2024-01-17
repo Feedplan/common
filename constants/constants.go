@@ -17,7 +17,7 @@ const (
 	DefaultServerPort = ":5000"
 	Authorization     = "Authorization"
 	Bearer            = "Bearer "
-
+	StrapiDBName      = "feedplan_strapi"
 	//Jwks
 	JwksAudience    = "JwksAudience"
 	JwksIssuer      = "JwksIssuer"
