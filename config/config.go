@@ -29,8 +29,9 @@ func fetchConfiguration(service, env, region string) ([]byte, error) {
 	var bodyBytes []byte
 	var err error
 	inDev := strings.Compare(env, constants.DevEnvironment) == 0
+	inLocal := strings.Compare(env, constants.LocalEnvironment) == 0
 	inProd := strings.Compare(env, constants.ProdEnvironment) == 0
-	if inDev || inProd {
+	if inDev || inProd || inLocal {
 		//panic("Couldn't load configuration, cannot start. Terminating. Error: " + err.Error())
 		workingDir, err := os.Getwd()
 		if err != nil {
@@ -87,12 +88,16 @@ func parseConfiguration(body []byte, env string) {
 	}
 	var sources map[string]interface{}
 	inDev := strings.Compare(env, constants.DevEnvironment) == 0
+	inLocal := strings.Compare(env, constants.LocalEnvironment) == 0
 	inProd := strings.Compare(env, constants.ProdEnvironment) == 0
 	if inDev {
 		sources = cloudConfig.PropertySources.Source
 	}
 	if inProd {
 		sources = cloudConfig.PropertySources.ProdSource
+	}
+	if inLocal {
+		sources = cloudConfig.PropertySources.LocalSource
 	}
 
 	for key, value := range sources {
@@ -110,6 +115,7 @@ type springCloudConfig struct {
 	PropertySources propertySource `json:"propertySources"`
 }
 type propertySource struct {
-	Source     map[string]interface{} `json:"source"`
-	ProdSource map[string]interface{} `json:"prodSource"`
+	Source      map[string]interface{} `json:"source"`
+	ProdSource  map[string]interface{} `json:"prodSource"`
+	LocalSource map[string]interface{} `json:"localSource"`
 }

@@ -9,8 +9,9 @@ import (
 type Env string
 
 const (
-	Dev  Env = constants.DevEnvironment
-	Prod Env = constants.ProdEnvironment
+	Dev   Env = constants.DevEnvironment
+	Prod  Env = constants.ProdEnvironment
+	Local Env = constants.LocalEnvironment
 )
 
 func InDev() bool {
@@ -28,6 +29,8 @@ func GetEnv() Env {
 		return Dev
 	case string(Prod):
 		return Prod
+	case string(Local):
+		return Local
 	default:
 		return Dev
 	}

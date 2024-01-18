@@ -5,6 +5,7 @@ import "time"
 const (
 	DevEnvironment    = "dev"
 	ProdEnvironment   = "prod"
+	LocalEnvironment  = "local"
 	Environment       = "Environment"
 	CorrelationId     = "X-Correlation-ID"
 	ServiceNameKey    = "serviceName"
