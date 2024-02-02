@@ -44,6 +44,7 @@ const (
 	//Database Keys
 	DatabaseUserKey               = "dbUser"
 	DatabasePassKey               = "dbPassword"
+	StrapiDBKey                   = "strapiDBName"
 	DatabaseHostKey               = "dbHost"
 	DatabaseNameKey               = "dbName"
 	DatabaseMaxIdleConnectionsKey = "dbMaxIdleConnections"

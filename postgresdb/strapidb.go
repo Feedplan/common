@@ -19,7 +19,7 @@ func InitializeStrapiDB() {
 	dbUserName := viper.GetString(constants.DatabaseUserKey)
 	dbPassword := viper.GetString(constants.DatabasePassKey)
 	dbHost := viper.GetString(constants.DatabaseHostKey)
-	dbName := constants.StrapiDBName
+	dbName := viper.GetString(constants.StrapiDBKey)
 	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", dbHost, dbUserName, dbName, dbPassword) //Build connection string
 	maxIdleConnections := viper.GetInt(constants.DatabaseMaxIdleConnectionsKey)
 	maxOpenConnections := viper.GetInt(constants.DatabaseMaxOpenConnectionsKey)
