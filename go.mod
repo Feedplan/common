@@ -12,7 +12,6 @@ require (
 	github.com/jinzhu/gorm v1.9.16
 	github.com/lib/pq v1.10.6
 	github.com/spf13/viper v1.12.0
-	gitlab.com/feedplan-libraries/common v1.3.0
 	go.uber.org/zap v1.21.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )

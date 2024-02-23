@@ -3,9 +3,9 @@ package correlation
 import (
 	"context"
 
+	"github.com/feedplan/common/constants"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"gitlab.com/feedplan-libraries/common/constants"
 )
 
 // WithReqContext returns logger

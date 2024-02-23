@@ -5,12 +5,11 @@ import (
 	"os"
 	"path"
 
+	"github.com/feedplan/common/constants"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
-
-	"gitlab.com/feedplan-libraries/common/constants"
 )
 
 var SugarLogger *zap.SugaredLogger

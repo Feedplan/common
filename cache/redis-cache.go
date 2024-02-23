@@ -6,11 +6,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/feedplan/common/constants"
+	"github.com/feedplan/common/logger"
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
-
-	"gitlab.com/feedplan-libraries/common/constants"
-	"gitlab.com/feedplan-libraries/common/logger"
 )
 
 var once sync.Once

@@ -5,14 +5,13 @@ import (
 	"os"
 	"time"
 
+	"github.com/feedplan/common/constants"
+	"github.com/feedplan/common/logger"
 	_ "github.com/golang-migrate/migrate/source/file"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
-
-	"gitlab.com/feedplan-libraries/common/constants"
-	"gitlab.com/feedplan-libraries/common/logger"
 )
 
 var db *gorm.DB

@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"gitlab.com/feedplan-libraries/common/logger"
+	"github.com/feedplan/common/logger"
 )
 
 var (

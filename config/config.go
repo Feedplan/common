@@ -9,9 +9,9 @@ import (
 	"os"
 	"strings"
 
+	"github.com/feedplan/common/constants"
+	"github.com/feedplan/common/logger"
 	"github.com/spf13/viper"
-	"gitlab.com/feedplan-libraries/common/constants"
-	"gitlab.com/feedplan-libraries/common/logger"
 )
 
 // Init :

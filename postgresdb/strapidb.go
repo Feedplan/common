@@ -5,10 +5,10 @@ import (
 	"os"
 	"time"
 
+	"github.com/feedplan/common/constants"
+	"github.com/feedplan/common/logger"
 	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
-	"gitlab.com/feedplan-libraries/common/constants"
-	"gitlab.com/feedplan-libraries/common/logger"
 )
 
 var strapiDB *gorm.DB

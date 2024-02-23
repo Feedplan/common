@@ -8,15 +8,14 @@ import (
 	"strings"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
+	"github.com/feedplan/common/cache"
+	"github.com/feedplan/common/constants"
+	"github.com/feedplan/common/logger"
 	jwt "github.com/form3tech-oss/jwt-go"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/spf13/viper"
-
-	"gitlab.com/feedplan-libraries/common/cache"
-	"gitlab.com/feedplan-libraries/common/constants"
-	"gitlab.com/feedplan-libraries/common/logger"
 )
 
 var (

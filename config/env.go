@@ -3,7 +3,7 @@ package config
 import (
 	"os"
 
-	"gitlab.com/feedplan-libraries/common/constants"
+	"github.com/feedplan/common/constants"
 )
 
 type Env string
