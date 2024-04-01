@@ -71,6 +71,10 @@ func Init() {
 	jwtMiddleWare = jwtMiddleware
 }
 
+func CheckRequestAuthorization(w http.ResponseWriter, r *http.Request) error {
+	return jwtMiddleWare.CheckJWT(w, r)
+}
+
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Get the client secret key
