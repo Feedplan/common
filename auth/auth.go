@@ -66,6 +66,7 @@ func Init() {
 			return result, nil
 		},
 		SigningMethod: jwt.SigningMethodRS256,
+		ErrorHandler:  func(w http.ResponseWriter, r *http.Request, e string) {},
 	})
 
 	jwtMiddleWare = jwtMiddleware
